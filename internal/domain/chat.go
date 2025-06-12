@@ -3,21 +3,25 @@ package domain
 import "time"
 
 type Chat struct {
-	ID           int    `gorm:"primaryKey"`
-	SessionToken string `gorm:"index"`
-	JID          string `gorm:"index"`
-	Title        string
-	UpdatedAt    time.Time
+	ID           int       `gorm:"primaryKey;autoIncrement"`
+	SessionToken string    `gorm:"size:255;index;not null"`
+	JID          string    `gorm:"size:255;uniqueIndex;not null"`
+	Title        string    `gorm:"size:255"`
+	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
 }
 
+func (Chat) TableName() string { return "chats" }
+
 type Message struct {
-	ID           int    `gorm:"primaryKey"`
-	SessionToken string `gorm:"index"`
-	ChatJID      string `gorm:"index"`
-	FromMe       bool
-	Text         string
-	Timestamp    time.Time `gorm:"index"`
+	ID           int       `gorm:"primaryKey;autoIncrement"`
+	SessionToken string    `gorm:"size:255;index;not null"`
+	ChatJID      string    `gorm:"size:255;index;not null"`
+	FromMe       bool      `gorm:"not null"`
+	Text         string    `gorm:"type:text"`
+	Timestamp    time.Time `gorm:"index;not null"`
 }
+
+func (Message) TableName() string { return "messages" }
 
 // RawMessage используется на этапе HistorySync до трансформации в Message
 // например: когда приходит *waProto.WebMessageInfo из WhatsApp
