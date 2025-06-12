@@ -2,6 +2,7 @@ package domain
 
 import "time"
 
+// Chat represents a chat conversation.
 type Chat struct {
 	ID           int       `gorm:"primaryKey"`
 	SessionToken string    `gorm:"size:255;index"`
@@ -10,43 +11,26 @@ type Chat struct {
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
 }
 
-func (Chat) TableName() string { return "chats" }
-
-type Message struct {
-	ID           int    `gorm:"primaryKey"`
-	SessionToken string `gorm:"size:255;index"`
-	ChatJID      string `gorm:"size:255;index"`
-	FromMe       bool
-	Text         string    `gorm:"type:text"`
-	Timestamp    time.Time `gorm:"index"`
+// ChatDTO is a transport representation of Chat.
+type ChatDTO struct {
+	ID           int    `json:"id"`
+	SessionToken string `json:"session_token"`
+	JID          string `json:"jid"`
+	Title        string `json:"title"`
+	UnreadCount  int    `json:"unread_count"`
 }
 
-func (Message) TableName() string { return "messages" }
-
-// RawMessage используется на этапе HistorySync до трансформации в Message
-// например: когда приходит *waProto.WebMessageInfo из WhatsApp
-// и нужно собрать JID, текст, from_me, timestamp
-
-type RawMessage struct {
-	JID       string
-	FromMe    bool
-	Text      string
-	Timestamp time.Time
+func (*Chat) TableName() string {
+	return "chats"
 }
 
-type WSMessageDTO struct {
-	Type         string    `json:"type"`
-	ChatJID      string    `json:"chat"`
-	From         string    `json:"from"`
-	Text         string    `json:"text"`
-	FromMe       bool      `json:"me"`
-	Timestamp    time.Time `json:"time"`
-	MessageID    int       `json:"message_id"`
-	SessionToken string    `json:"session_token"`
-}
-
-type WebSocketCommand struct {
-	Type    string `json:"type"`
-	ChatJID string `json:"chat"`
-	Text    string `json:"text"`
+// ToDTO converts a Chat to its DTO form.
+func (c *Chat) ToDTO(count int) ChatDTO {
+	return ChatDTO{
+		ID:           c.ID,
+		SessionToken: c.SessionToken,
+		JID:          c.JID,
+		Title:        c.Title,
+		UnreadCount:  count,
+	}
 }

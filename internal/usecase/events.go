@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/chatbox/whatsapp/internal/domain"
 	"github.com/chatbox/whatsapp/internal/infrastructure"
+	"github.com/gorilla/websocket"
 	"go.mau.fi/whatsmeow/types/events"
 )
 
@@ -47,7 +48,7 @@ func (e *EventsService) HandleEvent(session *domain.Session, evt interface{}) {
 		message := &domain.Message{
 			SessionToken: session.Token,
 			ChatJID:      chatJID,
-			FromMe:       ev.Info.IsFromMe,
+			IsFromMe:     ev.Info.IsFromMe,
 			Text:         ev.Message.GetConversation(),
 			Timestamp:    timestamp,
 		}
@@ -58,20 +59,8 @@ func (e *EventsService) HandleEvent(session *domain.Session, evt interface{}) {
 			return
 		}
 
-		// 3. Отправка через WebSocket
-		ws := domain.WSMessageDTO{
-			Type:         "message",
-			ChatJID:      chat.JID,
-			From:         ev.Info.SourceString(),
-			Text:         message.Text,
-			FromMe:       message.FromMe,
-			Timestamp:    message.Timestamp,
-			MessageID:    message.ID,
-			SessionToken: session.Token,
-		}
-
-		jsonBytes, _ := json.Marshal(ws)
-		if err := e.webHub.Send(session.Token, jsonBytes); err != nil {
+		jsonBytes, _ := json.Marshal(message.ToDTO(ev.Info.Type))
+		if err := e.webHub.Send(session.Token, jsonBytes, websocket.BinaryMessage); err != nil {
 			e.logger.Error().Err(err).Msg("Failed to send WS message")
 		}
 	}
