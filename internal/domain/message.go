@@ -2,15 +2,18 @@ package domain
 
 import "time"
 
+
 type Message struct {
-	ID           int    `gorm:"primaryKey"`
-	SessionToken string `gorm:"index"`
-	ChatJID      string `gorm:"index"`
-	IsRead       bool   `gorm:"default:false"`
-	IsFromMe     bool   `gorm:"default:false"`
-	Text         string
+	ID           int       `gorm:"primaryKey"`
+	SessionToken string    `gorm:"size:255;index"`
+	ChatJID      string    `gorm:"size:255;index"`
+	IsRead       bool      `gorm:"default:false"`
+	IsFromMe     bool      `gorm:"default:false"`
+	Text         string    `gorm:"type:text"`
 	Timestamp    time.Time `gorm:"index"`
 }
+
+func (Message) TableName() string { return "messages" }
 
 type WSMessageDTO struct {
 	Type         string    `json:"type"`

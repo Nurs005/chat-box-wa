@@ -7,3 +7,5 @@ type Session struct {
 	JID        string `json:"jid" gorm:"index"`
 	Active     bool   `json:"active" gorm:"default:false"`
 }
+
+func (Session) TableName() string { return "sessions" }

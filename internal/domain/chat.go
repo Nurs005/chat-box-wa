@@ -3,12 +3,13 @@ package domain
 import "time"
 
 type Chat struct {
-	ID           int    `gorm:"primaryKey"`
-	SessionToken string `gorm:"index"`
-	JID          string `gorm:"index"`
-	Title        string
-	UpdatedAt    time.Time
+	ID           int       `gorm:"primaryKey"`
+	SessionToken string    `gorm:"size:255;index"`
+	JID          string    `gorm:"size:255;index"`
+	Title        string    `gorm:"size:255"`
+	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
 }
+
 
 type ChatDTO struct {
 	ID           int    `json:"id"`
