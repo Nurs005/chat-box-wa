@@ -1,0 +1,6 @@
+app-env:
+  environment: development
+  port: "8080"
+
+db-config:
+  database-url: "postgres://user:password@localhost:5432/whatsapp?sslmode=disable"
