@@ -2,7 +2,10 @@ package session
 
 import (
 	"context"
+	"errors"
+
 	"github.com/chatbox/whatsapp/internal/domain"
+	"gorm.io/gorm"
 )
 
 func (r *SessionRepository) GetActiveSessions(ctx context.Context) ([]domain.Session, error) {
@@ -19,13 +22,18 @@ func (r *SessionRepository) GetActiveSessions(ctx context.Context) ([]domain.Ses
 }
 
 func (r *SessionRepository) Save(ctx context.Context, model *domain.Session) error {
-	return r.db.WithContext(ctx).Save(&model).Error
+	return r.db.WithContext(ctx).Save(model).Error
 }
 
 func (r *SessionRepository) GetByToken(ctx context.Context, token string) (model *domain.Session, err error) {
-	err = r.db.WithContext(ctx).Where("token = ?", token).Find(model).Error
+	model = &domain.Session{}
+	err = r.db.WithContext(ctx).Where("token = ?", token).First(model).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, gorm.ErrRecordNotFound
+		}
 		return nil, err
 	}
-	return
+  
+	return model, nil
 }
