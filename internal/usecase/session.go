@@ -35,7 +35,7 @@ func NewSessionService(repo session.ISessionRepository, wa infrastructure.WhatsA
 
 func (s *SessionService) NewSession(ctx context.Context, session *domain.Session) error {
 	if session.BusinessID == 0 {
-		return errors.HaveNoBussinessId
+		return errors.HaveNoBusinessId
 	}
 	token, err := uuid.NewUUID()
 	if err != nil {

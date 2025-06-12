@@ -15,7 +15,7 @@ func (h *Handler) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
-			utils.WriteJSONResponse(w, r, http.StatusUnauthorized, "unauthorized")
+			utils.WriteJSONResponse(w, r, http.StatusUnauthorized, "unauthorized", false)
 			return
 		}
 
@@ -23,7 +23,7 @@ func (h *Handler) AuthMiddleware(next http.Handler) http.Handler {
 
 		session, err := h.service.ISessionService.GetSession(r.Context(), token)
 		if err != nil {
-			utils.WriteJSONResponse(w, r, http.StatusUnauthorized, err.Error())
+			utils.WriteJSONResponse(w, r, http.StatusUnauthorized, err.Error(), false)
 			return
 		}
 

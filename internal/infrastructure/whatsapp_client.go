@@ -87,7 +87,7 @@ func (w *WhatsAppClientImpl) GenerateQR(ctx context.Context, session *domain.Ses
 	}
 
 	if client.Store.ID != nil {
-		return "", errors.UserAlredyLogedIn
+		return "", errors.UserAlreadyLogged
 	}
 
 	qrChan, err := client.GetQRChannel(ctx)

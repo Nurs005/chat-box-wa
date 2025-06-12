@@ -27,5 +27,5 @@ func (r *SessionRepository) GetByToken(ctx context.Context, token string) (model
 	if err != nil {
 		return nil, err
 	}
-	return model, err
+	return
 }

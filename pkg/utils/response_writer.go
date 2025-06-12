@@ -8,7 +8,7 @@ import (
 	"reflect"
 )
 
-func WriteJSONResponse(w http.ResponseWriter, r *http.Request, status int, message any) {
+func WriteJSONResponse(w http.ResponseWriter, r *http.Request, status int, message any, success bool) {
 	if reflect.TypeOf(message).Kind() == reflect.Ptr || reflect.TypeOf(message).Kind() == reflect.Chan || reflect.TypeOf(message).Kind() == reflect.Interface {
 		render.Status(r, http.StatusInternalServerError)
 		render.JSON(w, r, domain.BaseResponse{
@@ -19,7 +19,7 @@ func WriteJSONResponse(w http.ResponseWriter, r *http.Request, status int, messa
 	}
 	render.Status(r, status)
 	render.JSON(w, r, domain.BaseResponse{
-		Success:    false,
+		Success:    success,
 		StatusCode: status,
 		Message:    message,
 	})
