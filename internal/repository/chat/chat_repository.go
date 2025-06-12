@@ -11,7 +11,6 @@ type GormChatRepository struct {
 }
 
 func NewChatRepository(db *gorm.DB) *GormChatRepository {
-	db.AutoMigrate(&domain.Chat{}, &domain.Message{})
 	return &GormChatRepository{db: db}
 }
 
