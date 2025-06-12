@@ -10,39 +10,24 @@ type Chat struct {
 	UpdatedAt    time.Time
 }
 
-type Message struct {
-	ID           int    `gorm:"primaryKey"`
-	SessionToken string `gorm:"index"`
-	ChatJID      string `gorm:"index"`
-	FromMe       bool
-	Text         string
-	Timestamp    time.Time `gorm:"index"`
+type ChatDTO struct {
+	ID           int    `json:"id"`
+	SessionToken string `json:"session_token"`
+	JID          string `json:"jid"`
+	Title        string `json:"title"`
+	UnreadCount  int    `json:"unread_count"`
 }
 
-// RawMessage используется на этапе HistorySync до трансформации в Message
-// например: когда приходит *waProto.WebMessageInfo из WhatsApp
-// и нужно собрать JID, текст, from_me, timestamp
-
-type RawMessage struct {
-	JID       string
-	FromMe    bool
-	Text      string
-	Timestamp time.Time
+func (*Chat) TableName() string {
+	return "chats"
 }
 
-type WSMessageDTO struct {
-	Type         string    `json:"type"`
-	ChatJID      string    `json:"chat"`
-	From         string    `json:"from"`
-	Text         string    `json:"text"`
-	FromMe       bool      `json:"me"`
-	Timestamp    time.Time `json:"time"`
-	MessageID    int       `json:"message_id"`
-	SessionToken string    `json:"session_token"`
-}
-
-type WebSocketCommand struct {
-	Type    string `json:"type"`
-	ChatJID string `json:"chat"`
-	Text    string `json:"text"`
+func (c *Chat) ToDTO(count int) (chatDto ChatDTO) {
+	return ChatDTO{
+		ID:           c.ID,
+		SessionToken: c.SessionToken,
+		JID:          c.JID,
+		Title:        c.Title,
+		UnreadCount:  count,
+	}
 }
