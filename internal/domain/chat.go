@@ -2,7 +2,6 @@ package domain
 
 import "time"
 
-// Chat represents a chat conversation.
 type Chat struct {
 	ID           int       `gorm:"primaryKey"`
 	SessionToken string    `gorm:"size:255;index"`
@@ -11,7 +10,7 @@ type Chat struct {
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
 }
 
-// ChatDTO is a transport representation of Chat.
+
 type ChatDTO struct {
 	ID           int    `json:"id"`
 	SessionToken string `json:"session_token"`
@@ -24,8 +23,7 @@ func (*Chat) TableName() string {
 	return "chats"
 }
 
-// ToDTO converts a Chat to its DTO form.
-func (c *Chat) ToDTO(count int) ChatDTO {
+func (c *Chat) ToDTO(count int) (chatDto ChatDTO) {
 	return ChatDTO{
 		ID:           c.ID,
 		SessionToken: c.SessionToken,

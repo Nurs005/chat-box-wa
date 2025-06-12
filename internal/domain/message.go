@@ -2,7 +2,7 @@ package domain
 
 import "time"
 
-// Message represents a message belonging to a chat.
+
 type Message struct {
 	ID           int       `gorm:"primaryKey"`
 	SessionToken string    `gorm:"size:255;index"`
@@ -15,7 +15,6 @@ type Message struct {
 
 func (Message) TableName() string { return "messages" }
 
-// WSMessageDTO is a transport representation of Message for websocket clients.
 type WSMessageDTO struct {
 	Type         string    `json:"type"`
 	ChatJID      string    `json:"chat"`
