@@ -16,13 +16,14 @@ func (h *Handler) HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	session, ok := r.Context().Value(SessionCtxKey).(*domain.Session)
 
 	if !ok || session == nil {
-		utils.WriteJSONResponse(w, r, http.StatusUnauthorized, "session not found")
+		utils.WriteJSONResponse(w, r, http.StatusUnauthorized, "session not found", false)
 		return
 	}
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Error().Err(err).Msg("WebSocket upgrade failed")
+		utils.WriteJSONResponse(w, r, http.StatusBadRequest, "smth wrong with upgrader", false)
 		return
 	}
 

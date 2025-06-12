@@ -4,8 +4,8 @@ import "errors"
 
 // Session errors
 var (
-	HaveNoBussinessId = errors.New("have no business id")
-	UserAlredyLogedIn = errors.New("user alredy loged in")
+	HaveNoBusinessId  = errors.New("have no business id")
+	UserAlreadyLogged = errors.New("user already logged in")
 )
 
 // Ws Cmd errors
